@@ -1,0 +1,16 @@
+langchain>=0.2
+langchain-openai>=0.1
+langchain-community>=0.2
+langgraph>=0.1
+langchain-postgres>=0.0.4
+
+pgvector
+psycopg2-binary
+redis
+
+rank-bm25          # BM25 for hybrid search — Layer 7
+python-dotenv
+pyyaml             # Versioned prompts
+pytest
+pytest-mock
+httpx              # For API integration tests
