@@ -7,7 +7,7 @@ langchain-postgres>=0.0.4
 pgvector
 psycopg2-binary
 redis
-
+pydantic==2.6.0
 rank-bm25          # BM25 for hybrid search — Layer 7
 python-dotenv
 pyyaml             # Versioned prompts
