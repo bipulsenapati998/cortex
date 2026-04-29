@@ -5,7 +5,7 @@
 Enterprise employees waste 2-4 hours/week searching for information...
 
 ## Architecture
-![Diagram](assets\langraph_RAG_Flow.gif)
+![RAG Architecture Diagram](assets/langraph_RAG_Flow.gif)
 
 ## Features
 - LangGraph supervisor with conditional routing
