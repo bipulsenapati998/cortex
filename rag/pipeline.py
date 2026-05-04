@@ -1,10 +1,11 @@
-import os
 import logging
 from typing import Optional, List, Dict
 from pathlib import Path
 from langchain_core.messages import SystemMessage, HumanMessage
 from langchain_openai import ChatOpenAI
 from config import LLM_MODEL
+from vector_store import insert_chunk
+from query_understanding import understand_query
 
 from ingestion.document_loader import load_text_file, paragraph_chunk, _infer_metadata
 
@@ -59,7 +60,7 @@ def ingest_document(folder_path: str) -> int:
         except Exception as e:
             logger.error("[Ingest] Failed on %s: %s", filepath.name, e)
 
-    logger.info("[Ingest] Complete — %d total chunks", total_chunks)
+    logger.info("[Ingest] Completed: %d total chunks", total_chunks)
     return total_chunks
 
 

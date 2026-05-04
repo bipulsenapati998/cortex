@@ -3,7 +3,6 @@ Layer 1 — Document loading from .txt, .md, .pdf, .docx files.
 Layer 2 — Semantic chunking (paragraph-based with size cap).
 """
 
-import os
 import logging
 from typing import List, Dict
 from pathlib import Path

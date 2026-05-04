@@ -3,7 +3,6 @@ Layer 3 — Embedding generation using OpenAI text-embedding-3-small.
 Falls back to a simple hash-based mock if no API key is set (for testing).
 """
 
-import os
 import logging
 import hashlib
 from typing import List
