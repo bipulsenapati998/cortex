@@ -49,3 +49,19 @@ def log_query(
         error=error,
     )
     logger.info("QUERY | %s", json.dumps(asdict(record)))
+
+
+def log_retrieval(
+    raw_query: str,
+    expanded_query: str,
+    num_results: int,
+    user_tier: str,
+):
+    """Log a RAG retrieval event."""
+    logger.info(
+        "RETRIEVAL | tier=%s results=%d raw=%r expanded=%r",
+        user_tier,
+        num_results,
+        raw_query[:100],
+        expanded_query[:100],
+    )

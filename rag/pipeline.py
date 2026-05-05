@@ -6,7 +6,8 @@ from langchain_openai import ChatOpenAI
 from config import LLM_MODEL
 from vector_store import insert_chunk
 from query_understanding import understand_query
-
+from hybrid_search import hybrid_search
+from observability.logger import log_retrieval
 from ingestion.document_loader import load_text_file, paragraph_chunk, _infer_metadata
 
 

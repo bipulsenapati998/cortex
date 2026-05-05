@@ -1,6 +1,6 @@
 """
-Layer 1 — Document loading from .txt, .md, .pdf, .docx files.
-Layer 2 — Semantic chunking (paragraph-based with size cap).
+Layer 1: Document loading from .txt, .md, .pdf, .docx files.
+Layer 2: Semantic chunking (paragraph-based with size cap).
 """
 
 import logging

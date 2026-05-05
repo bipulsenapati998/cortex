@@ -1,9 +1,8 @@
 """
-Layer 5 — Query expansion, reformulation and intent classification.
+Layer 5: Query expansion, reformulation and intent classification.
 Improves retrieval recall by broadening narrow or ambiguous queries.
 """
 
-from numpy import true_divide
 import logging
 from typing import Dict
 from config import LLM_MODEL, OPEN_API_KEY
