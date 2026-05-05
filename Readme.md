@@ -156,3 +156,6 @@ docker restart d519f2842dbc
 docker compose exec pgvector psql -U cortex -d cortex_db
 docker exec -it d519f2842dbc psql -U cortex -d cortex_db
 ```
+
+# TODOs
+1. Remove hard code prompt in pipelines.py generate_answer

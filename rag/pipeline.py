@@ -3,10 +3,11 @@ from typing import Optional, List, Dict
 from pathlib import Path
 from langchain_core.messages import SystemMessage, HumanMessage
 from langchain_openai import ChatOpenAI
-from config import LLM_MODEL
+from config import LLM_MODEL, OPEN_API_KEY
 from vector_store import insert_chunk
 from query_understanding import understand_query
 from hybrid_search import hybrid_search
+from access_control import filter_by_tier
 from observability.logger import log_retrieval
 from ingestion.document_loader import load_text_file, paragraph_chunk, _infer_metadata
 
@@ -122,3 +123,59 @@ def query(
         "expanded_query": expanded_query,
         "num_results": len(results),
     }
+
+
+def generate_answer(
+    raw_query: str,
+    chunks: List[Dict],
+    entity_context: Optional[str] = None,
+    session_history: Optional[List] = None,
+) -> str:
+    """
+    Generate a grounded LLM answer from retrieved document chunks.
+    Injects entity context and session history if available.
+    """
+    api_key = OPEN_API_KEY
+    if not api_key or api_key.startswith("sk-..."):
+        # Offline fallback — return the most relevant chunk's content
+        if chunks:
+            return f"Based on our knowledge base: {chunks[0]['content'][:500]}"
+        return "No relevant information found."
+
+    # Build context from retrieved chunks
+    context_parts = []
+    for i, chunk in enumerate(chunks):
+        source = chunk.get("metadata", {}).get("source", chunk.get("doc_id", "unknown"))
+        context_parts.append(f"[Doc {i+1}: {source}]\n{chunk['content']}")
+    context_str = "\n\n---\n\n".join(context_parts)
+
+    # Build system prompt
+    system_content = (
+        "You are Cortex's Knowledge Agent. Answer the user's question using ONLY "
+        "the provided context documents. Cite sources inline as [Doc N]. "
+        "If the context doesn't contain the answer, say so honestly."
+    )
+    if entity_context:
+        system_content += f"\n\n{entity_context}"
+
+    # Build messages
+    messages = [SystemMessage(content=system_content)]
+
+    # Inject session history (last 4 turns max to control tokens)
+    if session_history:
+        messages.extend(session_history[-4:])
+
+    messages.append(
+        HumanMessage(content=f"Context:\n{context_str}\n\nQuestion: {raw_query}")
+    )
+
+    try:
+        llm = _get_llm()
+        resp = llm.invoke(messages)
+        return resp.content
+    except Exception as e:
+        logger.error("[RAGPipeline] LLM generation failed: %s", e)
+        return (
+            f"I found {len(chunks)} relevant document(s) but could not generate "
+            f"a response right now. Please try again."
+        )
