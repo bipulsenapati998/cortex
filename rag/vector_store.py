@@ -3,6 +3,7 @@ Layer 4: PGVector storage with in-memory fallback for offline testing.
 Handles CRUD operations on document_chunks table.
 """
 
+import os
 import logging
 import uuid
 from typing import List, Dict
