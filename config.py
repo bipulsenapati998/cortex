@@ -15,6 +15,8 @@ MAX_COST_PER_QUERY = float(os.getenv("MAX_COST_PER_QUERY", "0.01"))
 LOG_LEVEL = os.getenv("LOG_LEVEL", "INFO")
 EMBED_MODEL = os.getenv("EMBED_MODEL", "text-embedding-3-small")
 
+PROMPT_VERSION = os.getenv("KNOWLEDGE_AGENT_PROMPT_VERSION", "v1.0.0")
+
 # Maps user_tier -> set of allowed document access_tier values
 TIER_PERMISSIONS: Dict[str, set] = {
     "standard": {"public", "internal"},

@@ -117,6 +117,7 @@ cortex/
 │   └── cost_tracker.py          ← Per-query budget enforcement (W4)
 │
 ├── prompts/
+|   |── prompt_loader.py         ← Prompt validation and prompt load business logic
 │   ├── supervisor/
 │   │   ├── v1.0.0.yaml          ← Version 1 (W2)
 │   │   └── v1.1.0.yaml          ← A/B test variant

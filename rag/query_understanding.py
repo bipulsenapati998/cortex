@@ -88,3 +88,5 @@ def understand_query(query: str) -> Dict[str, str]:
             return {"original": query, "expanded": expanded, "intent": "lookup"}
         except Exception as e:
             logger.warning("[QueryUnderstanding] LLM expansion failed: %s", e)
+    # Passthrough fallback
+    return {"original": query, "expanded": query, "intent": "lookup"}
