@@ -1,6 +1,7 @@
 import json
 import logging
 from datetime import datetime
+from time import time
 from config import LOG_LEVEL
 from dataclasses import dataclass, asdict
 from typing import Optional
@@ -50,6 +51,39 @@ def log_query(
     )
     logger.info("QUERY | %s", json.dumps(asdict(record)))
 
+        # Optionally persist to PostgreSQL if available
+    _persist_to_db(record)
+
+
+def _persist_to_db(record: QueryLog):
+    """Best-effort write to query_log table — never blocks the response."""
+    try:
+        import psycopg2
+
+        postgres_url = os.getenv("POSTGRES_URL")
+        if not postgres_url:
+            return
+        with psycopg2.connect(postgres_url) as conn:
+            with conn.cursor() as cur:
+                cur.execute(
+                    """
+                    INSERT INTO query_log
+                        (user_id, query, agent_used, tokens, cost_usd, latency_ms, p_at_5)
+                    VALUES (%s, %s, %s, %s, %s, %s, %s)
+                    """,
+                    (
+                        record.user_id,
+                        record.query,
+                        record.agent_used,
+                        record.tokens,
+                        record.cost_usd,
+                        record.latency_ms,
+                        record.p_at_5,
+                    ),
+                )
+    except Exception:
+        pass  # observability must never break the main flow
+
 
 def log_retrieval(
     raw_query: str,
@@ -65,3 +99,13 @@ def log_retrieval(
         raw_query[:100],
         expanded_query[:100],
     )
+
+class Timer:
+    """Context manager for measuring latency."""
+
+    def __enter__(self):
+        self._start = time.time()
+        return self
+
+    def __exit__(self, *_):
+        self.elapsed_ms = int((time.time() - self._start) * 1000)

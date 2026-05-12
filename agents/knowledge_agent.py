@@ -6,7 +6,7 @@ import logging
 from langchain.messages import HumanMessage, SystemMessage
 from langchain_openai import ChatOpenAI
 
-from config import LLM_MODEL, OPEN_API_KEY, PROMPT_VERSION
+from config import KNOWLEDGE_AGENT_PROMPT_VERSION, LLM_MODEL, OPEN_API_KEY
 from memory.session_memory import SessionMemory
 from observability.logger import log_retrieval
 from prompts.prompt_loader import load_prompt
@@ -49,7 +49,7 @@ def _load_prompt(version: str = None):
         str : the full system prompt string ready for SystemMessage()
     """
 
-    ver = version or PROMPT_VERSION
+    ver = version or KNOWLEDGE_AGENT_PROMPT_VERSION
     prompt = load_prompt("knowledge_agent", version=ver, section="system_prompt")
     logger.debug(
         "[KnowledgeAgent] Loaded prompt version=%s (%d chars)", ver, len(prompt)
@@ -86,7 +86,7 @@ def knowledge_node(state: dict) -> dict:
     budget: QueryBudget = state.get("budget", QueryBudget())
 
     # ── 1. Load versioned system prompt ──────────────────────────────────
-    system_prompt_text = _load_prompt()  # ← THIS is where _load_prompt() is used
+    system_prompt_text = _load_prompt()  # THIS is where _load_prompt() is used
 
     # ── 2. Load entity context (persistent facts about this user) ────────
     entities = load_entities(user_id)

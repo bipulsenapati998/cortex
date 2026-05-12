@@ -23,7 +23,6 @@ Usage:
     print(sections["role_and_constraints"])
 """
 
-import os
 import logging
 from pathlib import Path
 from typing import Dict, Optional
